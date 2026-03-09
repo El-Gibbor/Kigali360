@@ -45,11 +45,21 @@ class FirestoreService extends ChangeNotifier {
 
   // Update
   Future<void> updateListing(ListingModel listing) async {
-    // TODO: implement update
+    try {
+      await _db.collection(_collection).doc(listing.id).update(listing.toMap());
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   // Delete
   Future<void> deleteListing(String id) async {
-    // TODO: implement delete
+    try {
+      await _db.collection(_collection).doc(id).delete();
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 }
