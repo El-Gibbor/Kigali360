@@ -8,9 +8,11 @@ import 'screens/main_wrapper.dart';
 import 'screens/login_screen.dart';
 import 'services/auth_service.dart';
 
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Kigali360',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
+        theme: AppTheme.lightTheme,
         home: const AuthWrapper(),
       ),
     );
