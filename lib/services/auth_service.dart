@@ -1,40 +1,38 @@
-import '../models/user_profile.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/user_model.dart';
 
-abstract class AuthService {
-  Stream<UserProfile?> get authStateStream;
+class AuthService extends ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> signIn(String email, String password);
+  // Stream of auth changes
+  Stream<User?> get userChanges => _auth.authStateChanges();
 
-  Future<void> register(String email, String password);
+  // Get current user
+  User? get currentUser => _auth.currentUser;
 
-  /// Sends an email-verification message to the currently signed-in user.
-  Future<void> sendEmailVerification();
+  Future<UserModel?> signUpWithEmailAndPassword(
+    String email,
+    String password,
+    String name,
+  ) async {
+    // TODO: implement signup logic
+    return null;
+  }
 
-  /// Signs the current user out.
-  Future<void> signOut();
+  Future<UserModel?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    // TODO: implement signin logic
+    return null;
+  }
 
-  /// Returns the currently signed-in [UserProfile], or `null` if signed out.
-  UserProfile? get currentUser;
-}
+  Future<void> signOut() async {
+    // TODO: implement signout logic
+  }
 
-/// Phase-1 stub: the stream always yields `null` (no signed-in user) and all
-/// write methods are no-ops.
-class StubAuthService implements AuthService {
-  @override
-  Stream<UserProfile?> get authStateStream => const Stream.empty();
-
-  @override
-  Future<void> signIn(String email, String password) async {}
-
-  @override
-  Future<void> register(String email, String password) async {}
-
-  @override
-  Future<void> sendEmailVerification() async {}
-
-  @override
-  Future<void> signOut() async {}
-
-  @override
-  UserProfile? get currentUser => null;
+  Future<void> sendEmailVerification() async {
+    // TODO: implement email verification logic
+  }
 }
