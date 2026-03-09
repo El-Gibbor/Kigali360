@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/listing_model.dart';
 import '../services/firestore_service.dart';
 import 'add_listing_screen.dart';
+import 'listing_detail_screen.dart';
 
 class DirectoryScreen extends StatefulWidget {
   const DirectoryScreen({super.key});
@@ -133,7 +134,13 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
                         isThreeLine: true,
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                         onTap: () {
-                          // TODO: Navigate to detail view
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ListingDetailScreen(listing: listing),
+                            ),
+                          );
                         },
                       ),
                     );

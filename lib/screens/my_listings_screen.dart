@@ -4,6 +4,7 @@ import '../models/listing_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import 'add_listing_screen.dart';
+import 'listing_detail_screen.dart';
 
 class MyListingsScreen extends StatelessWidget {
   const MyListingsScreen({super.key});
@@ -135,7 +136,13 @@ class MyListingsScreen extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    // TODO: Navigate to detail view
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ListingDetailScreen(listing: listing),
+                      ),
+                    );
                   },
                 ),
               );
