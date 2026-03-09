@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "594979139030",
+    "project_id": "kigali360-af35d",
+    "storage_bucket": "kigali360-af35d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594979139030:android:72bc28165fa5e133fdc877",
+        "android_client_info": {
+          "package_name": "com.example.kigali360"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy509OhN2fjOV03opt-VrCpFrXyb38YQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
