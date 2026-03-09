@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
 import 'theme/app_theme.dart';
+import 'screens/main_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,9 +23,7 @@ class MyApp extends StatelessWidget {
         title: 'Kigali360',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
-        home: const Scaffold(
-          body: Center(child: Text('Kigali City Services Directory')),
-        ),
+        home: const MainWrapper(),
       ),
     );
   }
