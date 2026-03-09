@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
+import 'theme/app_theme.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -19,9 +21,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Kigali360',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
+        theme: AppTheme.darkTheme,
         home: const Scaffold(
           body: Center(child: Text('Kigali City Services Directory')),
         ),
