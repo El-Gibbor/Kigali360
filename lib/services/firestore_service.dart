@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/listing_model.dart';
 
 class FirestoreService extends ChangeNotifier {
-  // final FirebaseFirestore _db = FirebaseFirestore.instance;
-  // final String _collection = 'listings';
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final String _collection = 'listings';
 
   // Create
   Future<void> addListing(ListingModel listing) async {
-    // TODO: implement add
+    try {
+      await _db.collection(_collection).doc(listing.id).set(listing.toMap());
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   // Read all
