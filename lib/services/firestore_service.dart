@@ -1,41 +1,35 @@
-import '../models/listing.dart';
+import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/listing_model.dart';
 
-abstract class FirestoreService {
-  Stream<List<Listing>> getListingsStream();
+class FirestoreService extends ChangeNotifier {
+  // final FirebaseFirestore _db = FirebaseFirestore.instance;
+  // final String _collection = 'listings';
 
-  Stream<List<Listing>> getUserListingsStream(String ownerId);
+  // Create
+  Future<void> addListing(ListingModel listing) async {
+    // TODO: implement add
+  }
 
-  /// Adds a new [listing] document and returns its generated ID.
-  Future<String> addListing(Listing listing);
+  // Read all
+  Stream<List<ListingModel>> getListings() {
+    // TODO: implement get all
+    return const Stream.empty();
+  }
 
-  /// Replaces the document for [listing.id] with the updated data.
-  Future<void> updateListing(Listing listing);
+  // Read user specific
+  Stream<List<ListingModel>> getUserListings(String userId) {
+    // TODO: implement get user specific
+    return const Stream.empty();
+  }
 
-  /// Permanently deletes the listing document with [id].
-  Future<void> deleteListing(String id);
+  // Update
+  Future<void> updateListing(ListingModel listing) async {
+    // TODO: implement update
+  }
 
-  /// Fetches a single listing by [id], returning `null` if not found.
-  Future<Listing?> getListingById(String id);
-}
-
-/// Phase-1 stub: all streams yield empty lists and write methods are no-ops.
-class StubFirestoreService implements FirestoreService {
-  @override
-  Stream<List<Listing>> getListingsStream() => const Stream.empty();
-
-  @override
-  Stream<List<Listing>> getUserListingsStream(String ownerId) =>
-      const Stream.empty();
-
-  @override
-  Future<String> addListing(Listing listing) async => '';
-
-  @override
-  Future<void> updateListing(Listing listing) async {}
-
-  @override
-  Future<void> deleteListing(String id) async {}
-
-  @override
-  Future<Listing?> getListingById(String id) async => null;
+  // Delete
+  Future<void> deleteListing(String id) async {
+    // TODO: implement delete
+  }
 }
