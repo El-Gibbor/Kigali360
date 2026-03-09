@@ -7,6 +7,7 @@ import 'theme/app_theme.dart';
 import 'screens/main_wrapper.dart';
 import 'screens/login_screen.dart';
 import 'services/auth_service.dart';
+import 'services/firestore_service.dart';
 
 import 'firebase_options.dart';
 
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthService())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => FirestoreService()),
+      ],
       child: MaterialApp(
         title: 'Kigali360',
         debugShowCheckedModeBanner: false,

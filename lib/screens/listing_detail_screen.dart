@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 import '../models/listing_model.dart';
+import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
+import 'add_listing_screen.dart';
 
 class ListingDetailScreen extends StatefulWidget {
   final ListingModel listing;
@@ -14,7 +18,33 @@ class ListingDetailScreen extends StatefulWidget {
 }
 
 class _ListingDetailScreenState extends State<ListingDetailScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final lat = widget.listing.latitude;
+    final lng = widget.listing.longitude;
+    final htmlString =
+        '''
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <style>
+            body { padding: 0; margin: 0; }
+            iframe { width: 100%; height: 100%; border: 0; }
+          </style>
+        </head>
+        <body>
+          <iframe src="https://www.google.com/maps?q=$lat,$lng&z=15&output=embed" allowfullscreen></iframe>
+        </body>
+      </html>
+    ''';
+
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadHtmlString(htmlString);
+  }
 
   Future<void> _launchMaps() async {
     final lat = widget.listing.latitude;
@@ -36,31 +66,85 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final latLng = LatLng(widget.listing.latitude, widget.listing.longitude);
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final isOwner = authService.currentUser?.uid == widget.listing.createdBy;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.listing.name)),
+      appBar: AppBar(
+        title: Text(widget.listing.name),
+        actions: [
+          if (isOwner) ...[
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddListingScreen(listingToEdit: widget.listing),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Delete Listing'),
+                    content: const Text(
+                      'Are you sure you want to delete this listing?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirm == true && context.mounted) {
+                  final firestoreService = Provider.of<FirestoreService>(
+                    context,
+                    listen: false,
+                  );
+                  try {
+                    await firestoreService.deleteListing(widget.listing.id);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Listing deleted')),
+                      );
+                      Navigator.pop(context);
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to delete listing'),
+                        ),
+                      );
+                    }
+                  }
+                }
+              },
+            ),
+          ],
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Map View
-          SizedBox(
-            height: 250,
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
-              markers: {
-                Marker(
-                  markerId: MarkerId(widget.listing.id),
-                  position: latLng,
-                  infoWindow: InfoWindow(title: widget.listing.name),
-                ),
-              },
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
-          ),
+          SizedBox(height: 250, child: WebViewWidget(controller: _controller)),
           // Details
           Expanded(
             child: SingleChildScrollView(

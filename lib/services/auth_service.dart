@@ -32,17 +32,30 @@ class AuthService extends ChangeNotifier {
           displayName: name,
         );
 
-        await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .set(userModel.toMap());
-        await user.sendEmailVerification();
+        try {
+          // If Firestore fails (e.g., due to rules), we still created the auth user.
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .set(userModel.toMap());
+        } catch (firestoreError) {
+          debugPrint('Firestore Error during signup: $firestoreError');
+        }
+
+        try {
+          await user.sendEmailVerification();
+        } catch (emailError) {
+          debugPrint('Email Verification Error: $emailError');
+        }
 
         return userModel;
       }
       return null;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FirebaseAuthException during signup: ${e.message}');
+      return null;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Unknown Error during signup: $e');
       return null;
     }
   }
@@ -59,13 +72,27 @@ class AuthService extends ChangeNotifier {
       User? user = result.user;
 
       if (user != null) {
-        DocumentSnapshot doc = await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        if (doc.exists) {
-          return UserModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        try {
+          DocumentSnapshot doc = await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .get();
+          if (doc.exists) {
+            return UserModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }
+        } catch (firestoreError) {
+          debugPrint('Firestore Error during login: $firestoreError');
         }
+
+        // If Firestore doc failed or doesn't exist, fallback to just Auth data
+        return UserModel(
+          uid: user.uid,
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+        );
       }
       return null;
     } catch (e) {
