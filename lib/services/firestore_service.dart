@@ -18,8 +18,15 @@ class FirestoreService extends ChangeNotifier {
 
   // Read all
   Stream<List<ListingModel>> getListings() {
-    // TODO: implement get all
-    return const Stream.empty();
+    return _db
+        .collection(_collection)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ListingModel.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   // Read user specific
