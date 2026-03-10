@@ -288,7 +288,7 @@ Navigator.push(context, MaterialPageRoute(
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url>
+git clone https://github.com/El-Gibbor/Kigali360.git
 cd kigali360
 
 # 2. Install dependencies
